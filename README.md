@@ -1,12 +1,28 @@
-# React + Vite
+# HowGood - Architecture Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+This document describes the architecture of the **HowGood** project. It includes an overview of the system components, their interactions, and a visual representation using Mermaid diagrams.
 
-Currently, two official plugins are available:
+## System Architecture
+```mermaid
+graph TD;
+    A[Frontend - React.js] -->|API Calls| B[Backend - Node.js, Express.js];
+    B -->|Data Fetch| C[Database - MongoDB, Firebase];
+    B -->|Authentication| D[Clerk];
+    B -->|AI Processing| E[Hugging Face API];
+    E -->|Sustainability Rating| F[AI Sustainability Analysis];
+    B -->|Hosting| G[Vercel, Railway, Render];
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Component Breakdown
+- **Frontend:** Built using React.js, Tailwind CSS, and ShadCN.
+- **Backend:** A Node.js and Express.js API handles business logic.
+- **Database:** MongoDB and Firebase store application data.
+- **Authentication:** Clerk is used for secure user authentication.
+- **AI Integration:** Hugging Face API provides AI-powered sustainability analysis.
+- **Hosting:** The application is deployed on Vercel, Railway, and Render.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Future Enhancements
+- Improve AI processing speed.
+- Optimize API calls for better performance.
+- Introduce additional AI models for enhanced sustainability insights.
