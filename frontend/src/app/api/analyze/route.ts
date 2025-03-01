@@ -23,9 +23,11 @@ export async function POST(req: Request) {
                 { headers: { Authorization: `Bearer ${HUGGING_FACE_API_KEY}` } }
             );
 
-            generatedDescription = descResponse.data?.generated_text?.trim();
-            if (!generatedDescription || generatedDescription.length < 10) {
-                console.warn("⚠ AI returned an empty or short description, retrying...");
+            // ✅ Extract generated text properly
+            if (Array.isArray(descResponse.data) && descResponse.data.length > 0) {
+                generatedDescription = descResponse.data[0]?.generated_text?.trim() || "No description available.";
+            } else {
+                console.warn("⚠ AI returned an unexpected response format:", descResponse.data);
                 generatedDescription = "No description available.";
             }
 
@@ -76,5 +78,3 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "AI Analysis Failed" }, { status: 500 });
     }
 }
-
-
