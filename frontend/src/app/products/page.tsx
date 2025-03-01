@@ -17,6 +17,39 @@ export default function ProductSearch() {
         setLoading(false);
     };
 
+    const handleSearch = async () => {
+        if (!search) return;
+        setLoading(true);
+        setAiProduct(null);
+
+        // Check if the product exists in MongoDB
+        if (filteredProducts.length > 0) {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            // Fetch AI-generated product details
+            const response = await fetch("/api/analyze", {
+                method: "POST",
+                body: JSON.stringify({ name: search }),
+                headers: { "Content-Type": "application/json" },
+            });
+
+            const data = await response.json();
+            setAiProduct({
+                name: search,
+                description: data.description,
+                rating: data.rating,
+                image: "/images/default.png", // Default placeholder image
+            });
+        } catch (error) {
+            console.error("AI Analysis Failed:", error);
+        }
+
+        setLoading(false);
+    };
+
     return (
         <div className="p-4">
             <input
@@ -43,6 +76,39 @@ export default function ProductSearch() {
                     <p className="font-bold text-green-500">Sustainability Rating: {product.rating}/100</p>
                 </div>
             )}
+        </div>
+    );
+}
+
+// Product Card Component
+function ProductCard({ product }: { product: any }) {
+    return (
+        <div className="flex items-center border p-5 rounded-lg shadow-md">
+            {/* Product Image */}
+            <Image src={product.image} alt={product.name} width={150} height={150} className="rounded-lg" />
+
+            {/* Product Details */}
+            <div className="ml-6">
+                <h2 className="text-xl font-bold">{product.name}</h2>
+                <p className="text-gray-600">{product.description}</p>
+
+                {/* Sustainability Rating */}
+                <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
+                    <div
+                        className={`h-4 rounded-full transition-all duration-500 ${product.rating > 75
+                            ? "bg-green-500"
+                            : product.rating > 50
+                                ? "bg-yellow-500"
+                                : "bg-red-500"
+                            }`}
+                        style={{ width: `${product.rating}%` }}
+                    ></div>
+                </div>
+
+                <p className="mt-2 text-sm text-gray-700">
+                    Sustainability Score: <strong>{product.rating}%</strong>
+                </p>
+            </div>
         </div>
     );
 }
