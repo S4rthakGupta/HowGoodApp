@@ -44,9 +44,11 @@ export default function HomePage() {
                 Browse Products
               </Button>
             </Link>
+            <Link href="/about">
             <Button className="border border-gray-900 text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
               About HowGood
             </Button>
+            </Link>
           </div>
         </div>
 
