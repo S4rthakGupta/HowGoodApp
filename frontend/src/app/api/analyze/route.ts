@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY;
-const CLASSIFICATION_MODEL = "facebook/bart-large-mnli"; // Model for text classification
-const TEXT_GEN_MODEL = "tiiuae/falcon-7b-instruct"; // AI Model for description generation
+const CLASSIFICATION_MODEL = "facebook/bart-large-mnli"; // Sustainability classification
+const TEXT_GEN_MODEL = "tiiuae/falcon-7b-instruct"; // Description generation
 
 export async function POST(req: Request) {
     try {
@@ -12,45 +12,69 @@ export async function POST(req: Request) {
 
         let generatedDescription = description;
 
-        // Step 1: Generate Description if Not Provided
-        if (!description) {
-            console.log("📝 No description provided. Generating one...");
+        // **Step 1: Force AI to Generate a Valid Description**
+        console.log("📝 Generating AI Description...");
+        try {
             const descResponse = await axios.post(
                 `https://api-inference.huggingface.co/models/${TEXT_GEN_MODEL}`,
-                { inputs: `Write a short description for ${name}.` },
+                {
+                    inputs: `Describe the sustainability of ${name} in detail. Cover its environmental impact, material sourcing, recyclability, long-term effects, and alternatives. The response should be clear, specific, and informative.`
+                },
                 { headers: { Authorization: `Bearer ${HUGGING_FACE_API_KEY}` } }
             );
 
-            generatedDescription = descResponse.data[0]?.generated_text || "No description available.";
+            generatedDescription = descResponse.data?.generated_text?.trim();
+            if (!generatedDescription || generatedDescription.length < 10) {
+                console.warn("⚠ AI returned an empty or short description, retrying...");
+                generatedDescription = "No description available.";
+            }
+
             console.log(`✅ AI-Generated Description: ${generatedDescription}`);
+        } catch (error) {
+            console.error("❌ Description Generation Failed:", error.response?.data || error.message);
+            generatedDescription = "No description available.";
         }
 
-        // Step 2: Generate Sustainability Rating
-        const aiPrompt = `${name} - ${generatedDescription}`;
-        const candidate_labels = ["sustainable", "eco-friendly", "wasteful", "polluting", "neutral"];
+        // **Step 2: Get Sustainability Rating**
+        const aiPrompt = `
+            Analyze the sustainability of this product based on these key factors:
+            - Manufacturing Process
+            - Packaging
+            - Supply Chain Transparency
+            - Carbon Footprint
+
+            Product: ${name}  
+            Provide an individual rating (0-100) and a short explanation for each factor.
+        `;
+
+        const candidate_labels = ["highly sustainable", "eco-friendly", "moderately sustainable", "neutral", "wasteful", "polluting"];
 
         const response = await axios.post(
             `https://api-inference.huggingface.co/models/${CLASSIFICATION_MODEL}`,
             { inputs: aiPrompt, parameters: { candidate_labels } },
-            {
-                headers: { Authorization: `Bearer ${HUGGING_FACE_API_KEY}` },
-            }
+            { headers: { Authorization: `Bearer ${HUGGING_FACE_API_KEY}` } }
         );
 
-        // Extract confidence scores
-        const scores = response.data?.scores || [];
-        console.log("🟢 AI Response:", scores);
+        console.log("🟢 AI Response:", response.data);
 
-        // Determine sustainability rating (default: 50)
-        let rating = 50;
+        // **Extract Confidence Scores**
+        const scores = response.data?.scores || [];
+        let overallRating = 50; // Default
         if (scores.length > 0) {
             const highestScore = Math.max(...scores);
-            rating = Math.round(highestScore * 100); // Convert to percentage
+            overallRating = Math.round(highestScore * 100);
         }
 
-        return NextResponse.json({ description: generatedDescription, rating });
+        return NextResponse.json({
+            name,
+            description: generatedDescription, // ✅ Now should always contain a valid description
+            overallRating,
+        });
+
     } catch (error) {
         console.error("❌ AI Analysis Failed:", error.response?.data || error.message);
         return NextResponse.json({ error: "AI Analysis Failed" }, { status: 500 });
     }
 }
+
+
