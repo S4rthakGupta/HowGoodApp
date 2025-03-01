@@ -1,37 +1,13 @@
-import axios from 'axios';
+import { HfInference } from '@huggingface/inference';
 
-export async function analyzeProductSustainability(productName: string) {
-    const apiKey = process.env.OPENAI_API_KEY; // Store your API key in .env.local
-    const prompt = `Analyze the sustainability impact of the product: "${productName}" and provide a rating (0-100) along with a brief description.`;
+const hf = new HfInference('your-huggingface-api-key');
 
-    try {
-        const response = await axios.post(
-            'https://api.openai.com/v1/completions',
-            {
-                model: 'gpt-4',
-                prompt: prompt,
-                max_tokens: 150
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
+export async function getAISustainabilityRating(name, description) {
+    const prompt = `Rate the sustainability of ${name}. Description: ${description}`;
+    const response = await hf.textGeneration({
+        model: 'google/flan-t5-large',
+        inputs: prompt,
+    });
 
-        const resultText = response.data.choices[0].text.trim();
-        const rating = parseInt(resultText.match(/\d+/)?.[0] || '50'); // Extract rating
-
-        return {
-            description: resultText,
-            rating
-        };
-    } catch (error) {
-        console.error('AI Analysis Error:', error);
-        return {
-            description: 'Could not determine sustainability.',
-            rating: 50
-        };
-    }
+    return response.generated_text; // Extract rating from AI response
 }
