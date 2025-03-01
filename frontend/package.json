@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.12.1",
+    "@huggingface/inference": "^3.4.1",
     "@radix-ui/react-slot": "^1.1.2",
     "mongoose": "^8.11.0",
     "next": "^15.2.0",
