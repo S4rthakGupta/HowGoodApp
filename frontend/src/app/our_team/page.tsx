@@ -25,10 +25,10 @@ const teamMembers = [
     github: "#",
   },
   {
-    name: "Jaiv Burman",
-    role: "Backend Developer",
-    image: "/team/jaiv.png",
-    linkedin: "https://www.linkedin.com/in/jaiv-b-14450b139/",
+    name: "Sartshakila rajapaksehak",
+    role: "Full-Stack Developer",
+    image: "/team/",
+    linkedin: "https://www.linkedin.com/in/shakila-rajapakse/",
     github: "https://github.com/JB250101",
   },
 ];
