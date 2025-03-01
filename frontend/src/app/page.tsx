@@ -1,31 +1,23 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Head from "next/head";
-import { Roboto } from "next/font/google";
-import { Button } from "@/components/ui/button";
+'use client';
+
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
-const roboto = Roboto({ subsets: ["latin"], weight: "400" });
-
-export default function SustainabilityPage() {
+export default function HomePage() {
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100 ${roboto.className}`}>
-      <Head>
-        <title>HowGood - Sustainability</title>
-        <meta name="description" content="Learn about sustainability and how to make eco-friendly choices." />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-      </Head>
-      
+    <div className="min-h-screen bg-white text-gray-900 font-[Maven Pro]">
       {/* Navigation Bar */}
-      <nav className="w-full bg-green-700 text-white py-4 px-6 flex justify-between items-center shadow-md fixed top-0 z-50">
-        <h1 className="text-2xl font-bold">HowGood</h1>
-        <ul className="flex space-x-6">
-          <li><a href="#" className="hover:underline">Home</a></li>
-          <li><a href="#" className="hover:underline">About</a></li>
-          <li><a href="#" className="hover:underline">Contact</a></li>
+      <nav className="fixed top-0 w-full bg-white shadow-md py-4 px-8 flex justify-between items-center z-50">
+        <h1 className="text-2xl font-semibold tracking-wide">HowGood</h1>
+        <ul className="flex space-x-6 text-lg">
+          <li><a href="#" className="hover:text-gray-600">Home</a></li>
+          <li><a href="#" className="hover:text-gray-600">About</a></li>
+          <li><a href="#" className="hover:text-gray-600">Contact</a></li>
           <li>
             <SignedOut>
-              <SignInButton mode="modal" className="bg-white text-green-700 px-4 py-2 rounded-md hover:bg-gray-200"/>
+              <SignInButton mode="modal" className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700"/>
             </SignedOut>
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
@@ -33,52 +25,51 @@ export default function SustainabilityPage() {
           </li>
         </ul>
       </nav>
-      
-      {/* Main Content */}
-      <div className="mt-28 text-center">
-        <h1 className="text-5xl font-bold text-green-700 mb-8">
-          HowGood
-        </h1>
-        <p className="text-center text-gray-600 max-w-2xl mb-10">
-          Embracing sustainability helps protect our planet for future generations. Discover eco-friendly solutions and make a difference today!
+
+      {/* Hero Section */}
+      <section className="relative flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-16">
+        {/* Text Content (Left Aligned) */}
+        <div className="relative z-10 max-w-xl text-left">
+          <h1 className="text-5xl font-bold leading-tight mb-6">
+            Clean Energy, Sustainable Future
+          </h1>
+          <p className="text-lg text-gray-600 mb-8">
+            We install advanced wind turbines to generate reliable, efficient, and eco-friendly energy for a greener tomorrow.
+          </p>
+          <div className="flex space-x-4">
+            <Link href="/products">
+              <Button className="bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700">
+                Browse Products
+              </Button>
+            </Link>
+            <Button className="border border-gray-900 text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+              About HowGood
+            </Button>
+          </div>
+        </div>
+
+        {/* Background Image (Right Side) */}
+        <div className="relative w-full lg:w-1/2">
+          <Image
+            src="/images/main.jpg"
+            alt="Sustainable Future"
+            width={1200}
+            height={600}
+            objectFit="cover"
+            className="rounded-lg"
+          />
+        </div>
+      </section>
+
+      {/* Info Section */}
+      <section className="py-16 px-6 text-center bg-gray-100">
+        <h2 className="text-4xl font-bold mb-6 text-gray-900">
+          Promoting Responsible Consumption
+        </h2>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          Our goal is to promote **sustainable consumption** and reduce environmental impact by encouraging people to make responsible product choices.
         </p>
-        <Button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-500">
-          View Featured Products
-        </Button>
-      </div>
-      
-      {/* Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mt-10">
-        <Card>
-          <CardHeader>
-            <CardTitle>Eco-Friendly Products</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Explore sustainable alternatives to everyday products and reduce your carbon footprint.</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Waste Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Learn how to properly recycle, compost, and minimize waste in your daily life.</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Energy Conservation</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Adopt energy-saving practices and explore renewable energy sources for a greener future.</p>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Footer */}
-      <footer className="w-full bg-gray-800 text-white py-4 mt-12 text-center">
-        <p>&copy; 2025 HowGood. All rights reserved.</p>
-      </footer>
+      </section>
     </div>
   );
 }
