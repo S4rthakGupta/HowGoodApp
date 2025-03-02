@@ -12,9 +12,11 @@
     "@clerk/nextjs": "^6.12.1",
     "@huggingface/inference": "^3.4.1",
     "@radix-ui/react-slot": "^1.1.2",
+    "@tailwindcss/oxide": "^4.0.9",
     "axios": "^1.8.1",
     "mongoose": "^8.11.0",
     "next": "^15.2.0",
+    "openai": "^4.86.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0"
