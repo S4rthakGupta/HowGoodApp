@@ -19,8 +19,7 @@ graph TD;
 - **Backend:** A Node.js and Express.js API handles business logic.
 - **Database:** MongoDB and Firebase store application data.
 - **Authentication:** Clerk is used for secure user authentication.
-- **AI Integration:** Hugging Face API provides AI-powered sustainability analysis.
-- **Hosting:** The application is deployed on Vercel, Railway, and Render.
+- **AI Integration:** OPEN AI API provides AI-powered sustainability analysis.
 
 ## Future Enhancements
 - Improve AI processing speed.
