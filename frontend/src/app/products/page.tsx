@@ -160,7 +160,7 @@ export default function ProductsPage() {
                         variant="outline"
                         disabled={loading}
                     >
-                        {loading ? "Extracting..." : "Extract URL"}
+                        {loading ? "Extracting..." : "Extract from URL"}
                     </Button>
 
                 </div>
