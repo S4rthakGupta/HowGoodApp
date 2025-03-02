@@ -2,6 +2,7 @@
 
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+
 import Image from "next/image";
 import Link from "next/link";
 import NavBar from "@/components/Nav";
@@ -12,7 +13,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-gray-900 font-[Maven Pro]">
       <NavBar />
 
-      {/* Hero Section */}
+      {/* Shakila Section */}
       <section className="relative flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-16">
         {/* Text Content (Left Aligned) */}
         <div className="relative z-10 max-w-xl text-left">
@@ -24,16 +25,13 @@ export default function HomePage() {
           </p>
           <div className="flex space-x-4">
             <Link href="/products">
-              <Button className="bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700">
-                Browse Products
-              </Button>
+              <Button variant="default">Browse Products</Button>
             </Link>
             <Link href="/about">
-            <Button className="border border-gray-900 text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
-              About HowGood
-            </Button>
+              <Button variant="outline">About HowGood</Button>
             </Link>
           </div>
+
         </div>
 
         {/* Background Image (Right Side) */}
@@ -58,7 +56,7 @@ export default function HomePage() {
           Our goal is to promote **sustainable consumption** and reduce environmental impact by encouraging people to make responsible product choices.
         </p>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
