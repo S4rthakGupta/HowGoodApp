@@ -6,6 +6,15 @@ import Image from "next/image";
 import NavBar from "@/components/Nav";
 import Footer from "@/components/Footer";
 
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
+
+import { Card, CardContent } from "@/components/ui/card";
 
 
 export default function ProductsPage() {
@@ -26,7 +35,7 @@ export default function ProductsPage() {
                 const data = await res.json();
 
                 // Select featured products (change number as needed)
-                const featured = data.slice(0, 2);
+                const featured = data.slice(0, 10);
 
                 setProducts(data.filter(p => !featured.includes(p))); // Avoid duplication
                 setFeaturedProducts(featured);
@@ -179,14 +188,53 @@ export default function ProductsPage() {
                 {/* Featured Products Section */}
                 {!loading && featuredProducts.length > 0 && (
                     <div className="mt-12">
-                        <h2 className="text-3xl font-bold text-center mb-6">🌟 Featured Products</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {featuredProducts.map((product: any) => (
-                                <ProductCard key={product._id} product={product} />
-                            ))}
-                        </div>
+                        <h2 className="text-3xl font-bold text-center mb-6"> Featured Products</h2>
+                        <Carousel className="w-full max-w-4xl mx-auto">
+                            <CarouselContent>
+                                {featuredProducts.map((product, index) => (
+                                    <CarouselItem key={index} className="basis-1/3">
+                                        <div className="p-1">
+                                            <Card className="shadow-lg border">
+                                                <CardContent className="p-4 flex flex-col items-center">
+                                                    <img
+                                                        src={product.image}
+                                                        alt={product.name}
+                                                        className="w-24 h-24 object-cover rounded-lg mb-4"
+                                                        onError={(e) => (e.currentTarget.src = "/images/default.png")}
+                                                    />
+                                                    <h3 className="text-lg font-semibold">{product.name}</h3>
+                                                    <p className="text-gray-600 text-sm text-center">
+                                                        {product.description}
+                                                    </p>
+                                                    {/* Sustainability Score Bar */}
+                                                    <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+                                                        <div
+                                                            className={`h-2 rounded-full ${product.rating < 30
+                                                                ? "bg-red-500"
+                                                                : product.rating >= 30 && product.rating < 50
+                                                                    ? "bg-orange-500"
+                                                                    : product.rating >= 50 && product.rating < 80
+                                                                        ? "bg-yellow-500"
+                                                                        : "bg-green-500"
+                                                                }`}
+                                                            style={{ width: `${product.rating}%` }}
+                                                        ></div>
+                                                    </div>
+                                                    <p className="text-sm text-gray-700 mt-2">
+                                                        Sustainability Score: <strong>{product.rating}%</strong>
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                        </Carousel>
                     </div>
                 )}
+
             </div>
 
             <Footer />
@@ -257,14 +305,14 @@ function AiProductCard({ product }: { product: any }) {
                                 r="50"
                                 stroke={
                                     product.rating < 30
-                                        ? 'red' 
+                                        ? 'red'
                                         : product.rating >= 30 && product.rating < 50
-                                        ? 'orange' 
-                                        : product.rating >= 50 && product.rating < 80
-                                        ? 'yellow' 
-                                        : 'green'
+                                            ? 'orange'
+                                            : product.rating >= 50 && product.rating < 80
+                                                ? 'yellow'
+                                                : 'green'
                                 }
-                                
+
                                 strokeWidth="10"
                                 fill="none"
                                 strokeDasharray="314" // Circumference of the circle (2 * Pi * radius)
@@ -315,15 +363,14 @@ function ProductCard({ product }: { product: any }) {
             {/* Sustainability Rating Bar */}
             <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
                 <div
-                    className={`h-4 rounded-full transition-all duration-500 ${
-                        product.rating < 30
-                            ? "bg-red-500"
-                            : product.rating >= 30 && product.rating < 50
+                    className={`h-4 rounded-full transition-all duration-500 ${product.rating < 30
+                        ? "bg-red-500"
+                        : product.rating >= 30 && product.rating < 50
                             ? "bg-orange-500"
                             : product.rating >= 50 && product.rating < 80
-                            ? "bg-yellow-500"
-                            : "bg-green-500"
-                    }`}
+                                ? "bg-yellow-500"
+                                : "bg-green-500"
+                        }`}
                     style={{ width: `${product.rating}%` }}
                 ></div>
             </div>
