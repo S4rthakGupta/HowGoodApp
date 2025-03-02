@@ -69,10 +69,9 @@ export default function ProductsPage() {
                 name: search,
                 description: data.description || "No description available.",
                 rating: data.overallRating || 50,
-                factorRatings: data.factorRatings || {},  // <-- Ensures it doesn't break if missing
-                image: "/images/default.png",
+                factorRatings: data.factorRatings || {},  
+                image: data.image && data.image.startsWith("http") ? data.image : "/images/default.png", // ✅ Ensures valid images
             });
-
 
             console.log(`✅ AI Response Received for ${search}`);
         } catch (err) {
@@ -82,7 +81,6 @@ export default function ProductsPage() {
 
         setLoading(false);
     };
-
 
     if (!user) {
         return (
@@ -173,7 +171,15 @@ function ProductCard({ product }: { product: any }) {
     return (
         <div className="flex items-center border p-5 rounded-lg shadow-md bg-white transition duration-200 hover:shadow-lg">
             {/* Product Image */}
-            <Image src={product.image} alt={product.name} width={150} height={150} className="rounded-lg" />
+            <Image
+                src={product.image && product.image.startsWith("http") ? product.image : "/images/default.png"} 
+                alt={product.name} 
+                width={150} 
+                height={150} 
+                className="rounded-lg object-cover"
+                unoptimized
+                onError={(e) => (e.currentTarget.src = "/images/default.png")} // ✅ Handle errors gracefully
+            />
 
             {/* Product Details */}
             <div className="ml-6">
@@ -183,10 +189,11 @@ function ProductCard({ product }: { product: any }) {
                 {/* Sustainability Rating Bar */}
                 <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
                     <div
-                        className={`h-4 rounded-full transition-all duration-500 ${product.rating > 75 ? "bg-green-500"
+                        className={`h-4 rounded-full transition-all duration-500 ${
+                            product.rating > 75 ? "bg-green-500"
                             : product.rating > 50 ? "bg-yellow-500"
-                                : "bg-red-500"
-                            }`}
+                            : "bg-red-500"
+                        }`}
                         style={{ width: `${product.rating}%` }}
                     ></div>
                 </div>
@@ -194,18 +201,6 @@ function ProductCard({ product }: { product: any }) {
                 <p className="mt-2 text-sm text-gray-700">
                     Sustainability Score: <strong>{product.rating}%</strong>
                 </p>
-
-                {/* **🔵 Factor-Based Sustainability Breakdown** */}
-                <div className="mt-4">
-                    <h3 className="text-lg font-semibold">Sustainability Breakdown</h3>
-                    {product.factorRatings && Object.entries(product.factorRatings).map(([factor, data]: any) => (
-                        <div key={factor} className="mt-2">
-                            <p className="text-gray-700"><strong>{factor}:</strong> {data.rating}%</p>
-                            <p className="text-sm text-gray-500">{data.justification}</p>
-                        </div>
-                    ))}
-                </div>
-
             </div>
         </div>
     );
