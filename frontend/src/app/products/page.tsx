@@ -188,7 +188,7 @@ export default function ProductsPage() {
                 {/* Featured Products Section */}
                 {!loading && featuredProducts.length > 0 && (
                     <div className="mt-12">
-                        <h2 className="text-3xl font-bold text-center mb-6"> Featured Products</h2>
+                        <h2 className="text-3xl font-bold text-center mb-6">Products</h2>
                         <Carousel className="w-full max-w-4xl mx-auto">
                             <CarouselContent>
                                 {featuredProducts.map((product, index) => (
