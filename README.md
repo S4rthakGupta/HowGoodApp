@@ -30,7 +30,7 @@ Ensure you have the following installed:
 ## Installation and Setup
 ### Clone the repository
 ```sh
-git clone https://github.com/your-repo/howgood.git
+git clone [https://github.com/S4rthakGupta/HowGoodApp/tree/fix-rollback]
 cd howgood/frontend
 ```
 
