@@ -126,19 +126,20 @@ export default function ProductsPage() {
                 <h1 className="text-4xl font-bold mb-6 text-center">Browse Products</h1>
 
                 {/* Search Bar for Product Name */}
-                <div className="flex flex-col md:flex-row justify-center mb-4 gap-4">
+                <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-4 max-w-2xl mx-auto">
                     <Input
                         type="text"
                         placeholder="Search by product name..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full md:w-1/2"
+                        className="flex-1 h-12"
                     />
 
                     <Button
                         onClick={() => handleSearch(search)}
                         variant="default"
                         disabled={loading}
+
                     >
                         {loading ? "Searching..." : "Search"}
                     </Button>
