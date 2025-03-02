@@ -136,8 +136,8 @@ export default function ProductsPage() {
                 {/* AI-Generated Product Display */}
                 {aiProduct && (
                     <div className="my-8">
-                        <h2 className="text-2xl font-semibold">AI-Generated Product</h2>
-                        <ProductCard product={aiProduct} />
+                        <h2 className="text-2xl font-semibold">Product Details</h2>
+                        <AiProductCard product={aiProduct} />
                     </div>
                 )}
 
@@ -156,7 +156,71 @@ export default function ProductsPage() {
     );
 }
 
-// **Reusable Product Card Component with Factor Breakdown**
+// **AI Product Card Component**
+function AiProductCard({ product }: { product: any }) {
+    return (
+        <div className="flex justify-center items-center p-6">
+            <div className="w-full md:w-2/3 bg-transparent backdrop-blur-lg rounded-lg shadow-lg flex p-6 gap-x-8">
+                {/* Left: Product Image */}
+                <div className="w-1/3">
+                    <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={500}
+                        height={200}
+                        className="rounded-lg object-cover"
+                        unoptimized
+                        onError={(e) => (e.currentTarget.src = "/images/default.png")} // Handle errors gracefully
+                    />
+                </div>
+
+                {/* Right: Product Details */}
+                <div className="w-2/3">
+                    {/* Product Name with Gray Background */}
+                    <h2 className="text-2xl font-bold bg-gray-200 p-4 rounded-lg">{product.name}</h2>
+                    <p className="text-gray-600 mt-2">{product.description}</p>
+
+                    {/* Sustainability Details */}
+                    <div className="mt-4 bg-gray-100 p-4 rounded-lg">
+                        <h3 className="text-xl font-semibold">Sustainability of {product.name}</h3>
+                        <ul className="list-disc pl-6 mt-2 text-gray-700">
+                            {product.factorRatings && Object.entries(product.factorRatings).map(([key, value]) => (
+                                <li key={key} className="text-sm">{`${key}: ${value}`}</li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Sustainability Rating Bar */}
+                    <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
+                        <div
+                            className={`h-4 rounded-full transition-all duration-500 ${
+                                product.rating > 75 ? "bg-green-500"
+                                    : product.rating > 50 ? "bg-yellow-500"
+                                    : "bg-red-500"
+                            }`}
+                            style={{ width: `${product.rating}%` }}
+                        ></div>
+                    </div>
+
+                    {/* Sustainability Score */}
+                    <div className="flex justify-between items-center mt-4">
+                        <p className="text-sm text-gray-700">Sustainability Score: <strong>{product.rating}%</strong></p>
+                        <div className="w-12 h-12 rounded-full border-2 flex justify-center items-center text-white font-semibold"
+                            style={{
+                                backgroundColor: product.rating > 75 ? "green" :
+                                    product.rating > 50 ? "yellow" : "red"
+                            }}>
+                            {product.rating}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+// **Reusable Product Card Component (Mongoose Products)**
 function ProductCard({ product }: { product: any }) {
     return (
         <div className="flex items-center border p-5 rounded-lg shadow-md bg-white transition duration-200 hover:shadow-lg">
@@ -168,7 +232,7 @@ function ProductCard({ product }: { product: any }) {
                 height={150}
                 className="rounded-lg object-cover"
                 unoptimized
-                onError={(e) => (e.currentTarget.src = "/images/default.png")} // ✅ Handle errors gracefully
+                onError={(e) => (e.currentTarget.src = "/images/default.png")} // Handle errors gracefully
             />
 
             {/* Product Details */}
