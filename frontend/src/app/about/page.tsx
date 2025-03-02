@@ -44,7 +44,7 @@ const teamMembers = [
 
 export default function AboutPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#13531c] text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#13531c] text-white">
       <Head>
         <title>HowGood - About Us</title>
         <meta name="description" content="Learn about HowGood and our commitment to sustainability." />
@@ -151,7 +151,9 @@ export default function AboutPage() {
           ))}
         </div>
       </div>
-      <Footer/>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
