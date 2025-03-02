@@ -136,6 +136,18 @@ export default function ProductsPage() {
                         {loading ? "Searching..." : "Search"}
                     </button>
                 </div>
+                {/* Loading Animation */}
+                    {loading && (
+                        <div className="flex flex-col justify-center items-center mt-6 space-y-4">
+                        <div className="relative flex justify-center items-center">
+                            <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-blue-500 border-opacity-75"></div>
+                            <div className="absolute h-10 w-10 bg-blue-500 rounded-full"></div>
+                        </div>
+                        <p className="text-lg text-gray-700 font-semibold">Analyzing product details...</p>
+                        <p className="text-sm text-gray-500">Please wait while we fetch AI-generated insights.</p>
+                    </div>
+                    )}
+
 
                 {/* **🔴 Error Message** */}
                 {error && <p className="text-red-500 mt-4">{error}</p>}
