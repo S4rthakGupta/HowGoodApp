@@ -5,6 +5,8 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import NavBar from "@/components/Nav";
 import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+
 
 import {
     Carousel,
@@ -130,13 +132,14 @@ export default function ProductsPage() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <button
+                    <Button
                         onClick={() => handleSearch(search)}
-                        className={`px-6 py-2 rounded-lg text-white ${loading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"}`}
+                        variant="default"
                         disabled={loading}
                     >
                         {loading ? "Searching..." : "Search"}
-                    </button>
+                    </Button>
+
                 </div>
 
                 {/* URL Search Bar for Product Extraction */}
@@ -148,13 +151,14 @@ export default function ProductsPage() {
                         value={urlSearch}
                         onChange={(e) => setUrlSearch(e.target.value)}
                     />
-                    <button
+                    <Button
                         onClick={() => handleSearch(urlSearch, true)}
-                        className={`px-6 py-2 rounded-lg text-white ${loading ? "bg-gray-500 cursor-not-allowed" : "bg-green-500 hover:bg-green-700"}`}
+                        variant="outline"
                         disabled={loading}
                     >
                         {loading ? "Extracting..." : "Extract from URL"}
-                    </button>
+                    </Button>
+
                 </div>
 
                 {/* Loading Animation */}
