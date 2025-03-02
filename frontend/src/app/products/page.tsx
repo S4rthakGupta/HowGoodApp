@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 export default function ProductsPage() {
     const { user } = useUser();
     const [products, setProducts] = useState([]);
+    const [featuredProducts, setFeaturedProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [urlSearch, setUrlSearch] = useState("");
     const [aiProduct, setAiProduct] = useState(null);
@@ -18,9 +19,18 @@ export default function ProductsPage() {
     // **Fetch existing products from MongoDB**
     useEffect(() => {
         async function fetchProducts() {
-            const res = await fetch("/api/products");
-            const data = await res.json();
-            setProducts(data);
+            try {
+                const res = await fetch("/api/products");
+                const data = await res.json();
+
+                // Select featured products (change number as needed)
+                const featured = data.slice(0, 2);
+
+                setProducts(data.filter(p => !featured.includes(p))); // Avoid duplication
+                setFeaturedProducts(featured);
+            } catch (err) {
+                console.error("Error fetching products:", err);
+            }
         }
         fetchProducts();
     }, []);
@@ -139,12 +149,8 @@ export default function ProductsPage() {
                 {/* Loading Animation */}
                 {loading && (
                     <div className="flex flex-col justify-center items-center mt-6 space-y-4">
-                        <div className="relative flex justify-center items-center">
-                            <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-blue-500 border-opacity-75"></div>
-                            <div className="absolute h-10 w-10 bg-blue-500 rounded-full"></div>
-                        </div>
+                        <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-blue-500 border-opacity-75"></div>
                         <p className="text-lg text-gray-700 font-semibold">Analyzing product details...</p>
-                        <p className="text-sm text-gray-500">Please wait while we fetch AI-generated insights.</p>
                     </div>
                 )}
 
@@ -167,6 +173,18 @@ export default function ProductsPage() {
                         <p className="text-gray-500 text-center">No products found.</p>
                     )}
                 </div>
+
+                {/* Featured Products Section */}
+                {!loading && featuredProducts.length > 0 && (
+                    <div className="mt-12">
+                        <h2 className="text-3xl font-bold text-center mb-6">🌟 Featured Products</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {featuredProducts.map((product: any) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             <Footer />
@@ -174,11 +192,16 @@ export default function ProductsPage() {
     );
 }
 
-// **Reusable Product Card Component**
+// **Reusable Product Card Component with Colored Sustainability Score**
 function ProductCard({ product }: { product: any }) {
+    const getSustainabilityColor = (score: number) => {
+        if (score <= 40) return "bg-red-700";
+        if (score <= 70) return "bg-yellow-500";
+        return "bg-green-500";
+    };
+
     return (
         <div className="flex flex-col items-center border p-5 rounded-lg shadow-md bg-white transition duration-200 hover:shadow-lg">
-            {/* Product Image */}
             <Image
                 src={product.image && product.image.startsWith("http") ? product.image : "/images/default.png"}
                 alt={product.name}
@@ -186,29 +209,15 @@ function ProductCard({ product }: { product: any }) {
                 height={180}
                 className="rounded-lg object-cover"
                 unoptimized
-                onError={(e) => (e.currentTarget.src = "/images/default.png")} // ✅ Handle errors gracefully
             />
 
-            {/* Product Details */}
-            <div className="text-center mt-4">
-                <h2 className="text-xl font-bold">{product.name}</h2>
-                <p className="text-gray-600">{product.description}</p>
+            <h2 className="text-xl font-bold mt-4">{product.name}</h2>
+            <p className="text-gray-600">{product.description}</p>
 
-                {/* Sustainability Rating Bar */}
-                <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
-                    <div
-                        className={`h-4 rounded-full transition-all duration-500 ${product.rating > 75 ? "bg-green-500"
-                            : product.rating > 50 ? "bg-yellow-500"
-                                : "bg-red-500"
-                            }`}
-                        style={{ width: `${product.rating}%` }}
-                    ></div>
-                </div>
-
-                <p className="mt-2 text-sm text-gray-700">
-                    Sustainability Score: <strong>{product.rating}%</strong>
-                </p>
+            <div className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full mt-4 ${getSustainabilityColor(product.rating)}`}>
+                {product.rating}%
             </div>
+            <p className="mt-2 text-lg font-semibold text-gray-700">Sustainability Score</p>
         </div>
     );
 }
