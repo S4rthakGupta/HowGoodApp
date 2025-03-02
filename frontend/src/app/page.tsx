@@ -14,10 +14,10 @@ export default function HomePage() {
       <NavBar />
 
       {/* Shakila Section */}
-      <section className="relative flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-16">
+      <section className="mt-10 flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-16">
         {/* Text Content (Left Aligned) */}
         <div className="relative z-10 max-w-xl text-left">
-          <h1 className="text-5xl font-bold leading-tight mb-6">
+          <h1 className="text-6xl font-bold leading-tight mb-0">
             Clean Energy, Sustainable Future
           </h1>
           <p className="text-lg text-gray-600 mb-8">
@@ -39,8 +39,8 @@ export default function HomePage() {
           <Image
             src="/images/main.jpg"
             alt="Sustainable Future"
-            width={1200}
-            height={600}
+            width={1300}
+            height={1300}
             objectFit="cover"
             className="rounded-lg"
           />
