@@ -12,15 +12,20 @@
 @import "tailwindcss";
 
 body {
-  /* font-family: 'Maven Pro', sans-serif; */
-  color: var(--foreground);
-  background: var(--background);
+  font-family: 'Maven Pro', sans-serif;
 }
 
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 /* ---break---
  */
 

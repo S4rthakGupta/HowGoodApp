@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion"; // Import motion from framer-motion
+
 import Image from "next/image";
 import Link from "next/link";
 import NavBar from "@/components/Nav";
@@ -14,10 +14,10 @@ export default function HomePage() {
       <NavBar />
 
       {/* Shakila Section */}
-      <section className="mt-10 flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-16">
+      <section className="relative flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-16">
         {/* Text Content (Left Aligned) */}
         <div className="relative z-10 max-w-xl text-left">
-          <h1 className="text-6xl font-bold leading-tight mb-0">
+          <h1 className="text-5xl font-bold leading-tight mb-6">
             Clean Energy, Sustainable Future
           </h1>
           <p className="text-lg text-gray-600 mb-8">
@@ -31,32 +31,29 @@ export default function HomePage() {
               <Button variant="outline">About HowGood</Button>
             </Link>
           </div>
+
         </div>
 
-        {/* Floating Animation for Image */}
-        <motion.div 
-          className="relative w-full lg:w-1/2"
-          animate={{ y: [0, -10, 0] }} // Floating effect
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} // Smooth looping
-        >
+        {/* Background Image (Right Side) */}
+        <div className="relative w-full lg:w-1/2">
           <Image
             src="/images/main.jpg"
             alt="Sustainable Future"
-            width={1300}
-            height={1300}
+            width={1200}
+            height={600}
             objectFit="cover"
             className="rounded-lg"
           />
-        </motion.div>
+        </div>
       </section>
 
       {/* Info Section */}
-      <section className="py-16 px-6 text-center bg-[#13531c] ">
-        <h2 className="text-4xl font-bold mb-6 text-white">
+      <section className="py-16 px-6 text-center bg-gray-100">
+        <h2 className="text-4xl font-bold mb-6 text-gray-900">
           Promoting Responsible Consumption
         </h2>
-        <p className="text-lg text-white max-w-3xl mx-auto">
-          Our goal is to promote <strong><i>Sustainable Consumption</i></strong> and reduce environmental impact by encouraging people to make responsible product choices.
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          Our goal is to promote **sustainable consumption** and reduce environmental impact by encouraging people to make responsible product choices.
         </p>
       </section>
       <Footer />
