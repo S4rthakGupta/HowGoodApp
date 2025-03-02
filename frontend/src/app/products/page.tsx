@@ -199,7 +199,7 @@ export default function ProductsPage() {
                                                     <img
                                                         src={product.image}
                                                         alt={product.name}
-                                                        className="w-24 h-24 object-cover rounded-lg mb-4"
+                                                        className="w-32 h-32 object-contain rounded-lg mb-4 mx-auto"
                                                         onError={(e) => (e.currentTarget.src = "/images/default.png")}
                                                     />
                                                     <h3 className="text-lg font-semibold">{product.name}</h3>
