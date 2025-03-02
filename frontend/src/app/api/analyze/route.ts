@@ -6,29 +6,6 @@ const CLASSIFICATION_MODEL = "facebook/bart-large-mnli"; // Sustainability class
 const TEXT_GEN_MODEL = "tiiuae/falcon-7b-instruct"; // Description generation
 const SERP_API_KEY = process.env.SERP_API_KEY; // SerpAPI Key for Google Image Search
 
-// **🔹 Function to Fetch Product Image Using SerpAPI**
-// async function fetchProductImage(productName: string) {
-//     try {
-//         const response = await axios.get(`https://serpapi.com/search`, {
-//             params: {
-//                 api_key: SERP_API_KEY,
-//                 engine: "google_images",
-//                 q: productName,
-//                 hl: "en",
-//                 gl: "us",
-//                 num: 1,
-//             },
-//         });
-
-//         // **Extract First Image URL**
-//         const imageUrl = response.data.images_results?.[0]?.original || "/images/default.png";
-//         console.log(`🖼️ Image Found for ${productName}: ${imageUrl}`);
-//         return imageUrl;
-//     } catch (error) {
-//         console.error("❌ Failed to fetch product image:", error.response?.data || error.message);
-//         return "/images/default.png"; // Fallback image
-//     }
-// }
 
 async function fetchProductImage(productName: string) {
     try {
