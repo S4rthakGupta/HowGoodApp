@@ -9,9 +9,8 @@ graph TD;
     A[Frontend - React.js] -->|API Calls| B[Backend - Node.js, Express.js];
     B -->|Data Fetch| C[Database - MongoDB, Firebase];
     B -->|Authentication| D[Clerk];
-    B -->|AI Processing| E[Hugging Face API];
+    B -->|AI Processing| E[Open AI API];
     E -->|Sustainability Rating| F[AI Sustainability Analysis];
-    B -->|Hosting| G[Vercel, Railway, Render];
 ```
 
 ## Component Breakdown
