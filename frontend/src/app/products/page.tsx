@@ -312,26 +312,27 @@ function ProductCard({ product }: { product: any }) {
             <h2 className="text-xl font-bold mt-4">{product.name}</h2>
             <p className="text-gray-600">{product.description}</p>
 
-                {/* Sustainability Rating Bar */}
-                <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
-                    <div
-                        className={`h-4 rounded-full transition-all duration-500 ${
-                            product.rating < 30
-                                ? "bg-red-500"
-                                : product.rating >= 30 && product.rating < 50
-                                ? "bg-orange-500"
-                                : product.rating >= 50 && product.rating < 80
-                                ? "bg-yellow-500"
-                                : "bg-green-500"
-                        }`}                        
-                        style={{ width: `${product.rating}%` }}
-                    ></div>
-                </div>
-
-                <p className="mt-2 text-sm text-gray-700">
-                    Sustainability Score: <strong>{product.rating}%</strong>
-                </p>
+            {/* Sustainability Rating Bar */}
+            <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
+                <div
+                    className={`h-4 rounded-full transition-all duration-500 ${
+                        product.rating < 30
+                            ? "bg-red-500"
+                            : product.rating >= 30 && product.rating < 50
+                            ? "bg-orange-500"
+                            : product.rating >= 50 && product.rating < 80
+                            ? "bg-yellow-500"
+                            : "bg-green-500"
+                    }`}
+                    style={{ width: `${product.rating}%` }}
+                ></div>
             </div>
+
+            <p className="mt-2 text-sm text-gray-700">
+                Sustainability Score: <strong>{product.rating}%</strong>
+            </p>
+
+            {/* Removed the extra closing div */}
             <p className="mt-2 text-lg font-semibold text-gray-700">Sustainability Score</p>
         </div>
     );

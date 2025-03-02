@@ -26,7 +26,7 @@ const teamMembers = [
   {
     name: "Gaurav",
     role: "Web Developer",
-    image: "/team/Gaurav.jpg",
+    image: "/team/Gaurav2.jpg",
     campus: "Conestoga, Brantford",
     linkedin: "https://www.linkedin.com/in/gaurav-9411a42a3/",
     github: "https://github.com/GauravChumber",
