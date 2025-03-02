@@ -4,6 +4,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
+import Footer from "@/components/Footer";
 
 const teamMembers = [
   {

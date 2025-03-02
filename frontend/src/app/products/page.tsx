@@ -1,10 +1,10 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import NavBar from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 export default function ProductsPage() {
     const { user } = useUser();
@@ -69,7 +69,7 @@ export default function ProductsPage() {
                 name: search,
                 description: data.description || "No description available.",
                 rating: data.overallRating || 50,
-                factorRatings: data.factorRatings || {},  
+                factorRatings: data.factorRatings || {},
                 image: data.image && data.image.startsWith("http") ? data.image : "/images/default.png", // ✅ Ensures valid images
             });
 
@@ -84,59 +84,43 @@ export default function ProductsPage() {
 
     if (!user) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center flex-col">
                 <p className="text-lg text-gray-600">🔒 Please log in to see product details.</p>
+                <Footer />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-white text-gray-900">
-            {/* Navigation Bar */}
-            <nav className="fixed top-0 w-full bg-white shadow-md py-4 px-8 flex justify-between items-center z-50">
-                <h1 className="text-2xl font-semibold tracking-wide">HowGood</h1>
-                <ul className="flex space-x-6 text-lg">
-                    <li><Link href="/" className="hover:text-gray-600">Home</Link></li>
-                    <li><Link href="/about" className="hover:text-gray-600">About</Link></li>
-                    <li><Link href="/contact" className="hover:text-gray-600">Contact</Link></li>
-                    <li>
-                        <SignedOut>
-                            <div className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700 cursor-pointer">
-                                <SignInButton mode="modal" />
-                            </div>
-                        </SignedOut>
-                        <SignedIn>
-                            <UserButton afterSignOutUrl="/" />
-                        </SignedIn>
-                    </li>
-                </ul>
-            </nav>
+        <div className="min-h-screen bg-white text-gray-900 flex flex-col">
+            <NavBar />
 
             {/* Page Content */}
-            <div className="p-10 pt-20">
-                <h1 className="text-4xl font-bold mb-6">Browse Products</h1>
+            <div className="flex-grow p-10 pt-20">
+                <h1 className="text-4xl font-bold mb-6 text-center">Browse Products</h1>
 
                 {/* Search Bar */}
-                <div className="flex space-x-4">
+                <div className="flex justify-center mb-6">
                     <input
                         type="text"
                         placeholder="Search for a product..."
-                        className="w-full p-3 border border-gray-300 rounded-lg"
+                        className="w-full md:w-1/2 p-3 border border-gray-300 rounded-lg"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                     <button
                         onClick={handleSearch}
-                        className={`px-6 py-2 rounded-lg text-white ${loading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"
+                        className={`ml-4 px-6 py-2 rounded-lg text-white ${loading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700"
                             }`}
                         disabled={loading}
                     >
                         {loading ? "Searching..." : "Search"}
                     </button>
                 </div>
+
                 {/* Loading Animation */}
-                    {loading && (
-                        <div className="flex flex-col justify-center items-center mt-6 space-y-4">
+                {loading && (
+                    <div className="flex flex-col justify-center items-center mt-6 space-y-4">
                         <div className="relative flex justify-center items-center">
                             <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-blue-500 border-opacity-75"></div>
                             <div className="absolute h-10 w-10 bg-blue-500 rounded-full"></div>
@@ -144,16 +128,20 @@ export default function ProductsPage() {
                         <p className="text-lg text-gray-700 font-semibold">Analyzing product details...</p>
                         <p className="text-sm text-gray-500">Please wait while we fetch AI-generated insights.</p>
                     </div>
-                    )}
+                )}
 
+                {/* Error Message */}
+                {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
 
-                {/* **🔴 Error Message** */}
-                {error && <p className="text-red-500 mt-4">{error}</p>}
+                {/* AI-Generated Product Display */}
+                {aiProduct && (
+                    <div className="my-8">
+                        <h2 className="text-2xl font-semibold">AI-Generated Product</h2>
+                        <ProductCard product={aiProduct} />
+                    </div>
+                )}
 
-                {/* **🟢 AI-Generated Product Display** */}
-                {aiProduct && <ProductCard product={aiProduct} />}
-
-                {/* **🟡 Product List from Database** */}
+                {/* Product List from Database */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
                     {products.length > 0 ? (
                         products.map((product: any) => <ProductCard key={product._id} product={product} />)
@@ -162,6 +150,8 @@ export default function ProductsPage() {
                     )}
                 </div>
             </div>
+
+            <Footer />
         </div>
     );
 }
@@ -172,10 +162,10 @@ function ProductCard({ product }: { product: any }) {
         <div className="flex items-center border p-5 rounded-lg shadow-md bg-white transition duration-200 hover:shadow-lg">
             {/* Product Image */}
             <Image
-                src={product.image && product.image.startsWith("http") ? product.image : "/images/default.png"} 
-                alt={product.name} 
-                width={150} 
-                height={150} 
+                src={product.image && product.image.startsWith("http") ? product.image : "/images/default.png"}
+                alt={product.name}
+                width={150}
+                height={150}
                 className="rounded-lg object-cover"
                 unoptimized
                 onError={(e) => (e.currentTarget.src = "/images/default.png")} // ✅ Handle errors gracefully
@@ -191,8 +181,8 @@ function ProductCard({ product }: { product: any }) {
                     <div
                         className={`h-4 rounded-full transition-all duration-500 ${
                             product.rating > 75 ? "bg-green-500"
-                            : product.rating > 50 ? "bg-yellow-500"
-                            : "bg-red-500"
+                                : product.rating > 50 ? "bg-yellow-500"
+                                : "bg-red-500"
                         }`}
                         style={{ width: `${product.rating}%` }}
                     ></div>

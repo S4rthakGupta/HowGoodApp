@@ -4,29 +4,13 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import NavBar from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-[Maven Pro]">
-      {/* Navigation Bar */}
-      <nav className="fixed top-0 w-full bg-white shadow-md py-4 px-8 flex justify-between items-center z-50">
-        <h1 className="text-2xl font-semibold tracking-wide">HowGood</h1>
-        <ul className="flex space-x-6 text-lg">
-          <li><a href="/" className="hover:text-gray-600">Home</a></li>
-          <li><a href="/about" className="hover:text-gray-600">About</a></li>
-          <li><a href="/contact" className="hover:text-gray-600">Contact</a></li>
-          <li>
-          <SignedOut>
-            <div className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700 cursor-pointer">
-                <SignInButton mode="modal" />
-            </div>
-        </SignedOut>
-            <SignedIn>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
-          </li>
-        </ul>
-      </nav>
+      <NavBar />
 
       {/* Hero Section */}
       <section className="relative flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-16">
@@ -74,6 +58,7 @@ export default function HomePage() {
           Our goal is to promote **sustainable consumption** and reduce environmental impact by encouraging people to make responsible product choices.
         </p>
       </section>
+      <Footer/>
     </div>
   );
 }
