@@ -3,43 +3,38 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-white border-t border-gray-200 py-6 px-4">
+    <footer className="flex flex-col items-center px-4 py-2 bg-gray-100 bottom-0 w-full ">
       {/* Top row: Logos */}
-      <div className="flex flex-col md:flex-row justify-between items-center w-full mb-0">
-        
-        {/* Left: HowGood Logo */}
-        <div className="mb-0 md:mb-0">
+      <div className="flex justify-between items-center w-full mb-2">
+        <div className="flex items-center">
           <Image
-            src="/images/logo2.png"
+            src="/images/logo2.png"  // HowGood logo on the right
             alt="HowGood Logo"
-            width={80}
-            height={50}
+            width={140}  // Increased logo size
+            height={90}  // Increased logo size
           />
         </div>
 
-        {/* Right: Conhacks Logo */}
-        <div>
+        <div className="flex items-center">
           <Image
-            src="/images/conhacks.png"
+            src="/images/conhacks.png"  // Conhack image on the left
             alt="Conhacks Logo"
-            width={100}
-            height={90}
+            width={140}  // Increased logo size
+            height={90}  // Increased logo size
           />
         </div>
-
       </div>
-        <div className="text-center text-2xl text-black italic"><strong>Developed By: Desi Guru's</strong></div>
 
-      {/* Navigation Links */}
-      <div className="flex justify-center space-x-6 text-sm font-medium text-gray-700 mt-4">
+      {/* Copyright text */}
+      <div className="text-center text-xs text-gray-600 mb-1">
+        <p>©️ {new Date().getFullYear()} HowGood. All rights reserved.</p>
+      </div>
+
+      {/* Bottom row: Navigation links */}
+      <div className="flex space-x-6 text-center text-xs mb-1 mt-10">
         <Link href="/" className="hover:text-gray-900 transition duration-200">Home</Link>
-        <Link href="/products" className="hover:text-gray-900 transition duration-200">Product Score</Link>
-        <Link href="/about" className="hover:text-gray-900 transition duration-200">Our Team</Link>
-      </div>
-
-      {/* Copyright */}
-      <div className="text-center text-xs text-gray-600 mt-4">
-        <p>© {new Date().getFullYear()} HowGood. All rights reserved.</p>
+        <Link href="/about" className="hover:text-gray-900 transition duration-200">About</Link>
+        <Link href="/products" className="hover:text-gray-900 transition duration-200">Products</Link>
       </div>
 
     </footer>
