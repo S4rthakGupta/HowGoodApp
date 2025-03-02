@@ -1,26 +1,115 @@
-# HowGood - Architecture Documentation
+# HowGood Project
 
 ## Overview
-This document describes the architecture of the **HowGood** project. It includes an overview of the system components, their interactions, and a visual representation using Mermaid diagrams.
+HowGood is a web-based sustainable application designed to help users discover sustainable products, track waste management, and find eco-friendly alternatives. The project leverages AI-powered APIs and authentication services to provide an intuitive user experience.
 
-## System Architecture
+## Features
+- **Sustainable Product Search**: Search for products by name or URL.
+- **AI-Powered Sustainability Rating**: Get sustainability scores for products.
+- **Speech-to-Text Search**: Voice-based search functionality.
+- **User Authentication**: Secure login/signup using Clerk.
+- **Waste Management Tracking**: Learn about recycling and composting.
+
+## Project Architecture
 ```mermaid
-graph TD;
-    A[Frontend - React.js] -->|API Calls| B[Backend - Node.js, Express.js];
-    B -->|Data Fetch| C[Database - MongoDB, Firebase];
-    B -->|Authentication| D[Clerk];
-    B -->|AI Processing| E[Open AI API];
-    E -->|Sustainability Rating| F[AI Sustainability Analysis];
+graph LR
+    A[Frontend - Next.js] -->|Fetch Data| B[Backend - Node.js]
+    B -->|Database Storage| C[MongoDB Atlas]
+    B -->|AI Processing| D[Hugging Face API]
+    B -->|Search Engine| E[SerpAPI]
+    A -->|User Authentication| F[Clerk API]
+    B -->|AI-Powered Response| G[OpenAI API]
 ```
 
-## Component Breakdown
-- **Frontend:** Built using React.js, Tailwind CSS, and ShadCN.
-- **Backend:** A Node.js and Express.js API handles business logic.
-- **Database:** MongoDB and Firebase store application data.
-- **Authentication:** Clerk is used for secure user authentication.
-- **AI Integration:** OPEN AI API provides AI-powered sustainability analysis.
+## Prerequisites
+Ensure you have the following installed:
+- Node.js (v16 or later)
+- npm or yarn
+- Git
 
-## Future Enhancements
-- Improve AI processing speed.
-- Optimize API calls for better performance.
-- Introduce additional AI models for enhanced sustainability insights.
+## Installation and Setup
+### Clone the repository
+```sh
+git clone https://github.com/your-repo/howgood.git
+cd howgood/frontend
+```
+
+### Install dependencies
+```sh
+npm install
+```
+
+### Set up environment variables
+Create a `.env.local` file in the root of the `frontend` directory and add the following:
+```sh
+MONGODB_URI=mongodb+srv://shakilamr124:HzopD5PTIzFX5j7k@howgooddb.bdpyc.mongodb.net/HowGood?retryWrites=true&w=majority
+HUGGING_FACE_API_KEY=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
+OPENAI_API_KEY=sk-svcacct-89K_iEcRJgE1B2qvStl5DehctV2ZQHRLvTVVx8KKv3gmyjhcuTcEXhe2VmaLsyV5KT3BlbkFJXnAbJhwhCLamtvj_NMfC8EGJEqaO6E1Rl7aumVpdlfRzREwBXYq8J4I1HQ8qOavAA
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_bWVycnktYmVhZ2xlLTQ3LmNsZXJrLmFjY291bnRzLmRldiQ
+CLERK_SECRET_KEY=sk_test_BDSuvjDl1ydkhI9VLuvQf2sFfM046TpuhW0wdwmDDQ
+
+SERP_API_KEY=f2b31603d7f9c27719238040e1e3c3341c6e6584d30ead16c4777757dbe22010
+```
+
+### Start the Development Server
+```sh
+npm run dev
+```
+Visit `http://localhost:3000` in your browser to see the application running.
+
+## Project Structure
+```
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── analyze/
+│   │   │   ├── products/
+│   │   │   ├── ai.ts
+│   │   │   ├── products.ts
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   │   ├── button.tsx
+│   │   │   │   ├── input.tsx
+│   │   │   │   ├── ProductCard.tsx
+│   │   │   │   ├── Nav.tsx
+│   │   │   │   ├── Footer.tsx
+│   │   ├── styles/
+│   ├── lib/
+│   ├── middleware.ts
+├── public/
+├── .env.local
+├── next.config.ts
+├── package.json
+├── tsconfig.json
+├── README.md
+```
+
+## Team Members
+| Name | Role | Institution |
+|------|------|------------|
+| **Sarthak Gupta** | Full-Stack Developer | Conestoga, Brantford |
+| **Girish Bhuteja** | Front-End Developer | Conestoga, Waterloo |
+| **Gaurav** | Full-Stack Developer | Conestoga, Brantford |
+| **Shakila Rajapakse** | Front-End Developer | Conestoga, Brantford |
+
+## Technologies Used
+- **Frontend**: React.js, Next.js, Tailwind CSS
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB Atlas
+- **APIs**: Hugging Face, OpenAI, SerpAPI, Clerk
+
+## Contributing
+If you want to contribute:
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Commit changes (`git commit -m 'Added new feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Open a Pull Request.
+
+## License
+This project is licensed under the MIT License.
+
+## Contact
+For any questions, feel free to reach out to the team!
