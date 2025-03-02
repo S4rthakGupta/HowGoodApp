@@ -1,10 +1,12 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import NavBar from "@/components/Nav";
 import Footer from "@/components/Footer";
+
+
 
 export default function ProductsPage() {
     const { user } = useUser();
@@ -158,6 +160,17 @@ export default function ProductsPage() {
 
 // **AI Product Card Component**
 function AiProductCard({ product }: { product: any }) {
+    const circleRef = useRef<SVGCircleElement | null>(null);
+
+    useEffect(() => {
+        if (circleRef.current) {
+            const radius = circleRef.current.r.baseVal.value;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (product.rating / 100) * circumference;
+            circleRef.current.style.strokeDashoffset = `${offset}`;
+        }
+    }, [product.rating]);
+
     return (
         <div className="flex justify-center items-center p-6">
             <div className="w-full md:w-2/3 bg-transparent backdrop-blur-lg rounded-lg shadow-lg flex p-6 gap-x-8">
@@ -170,7 +183,7 @@ function AiProductCard({ product }: { product: any }) {
                         height={200}
                         className="rounded-lg object-cover"
                         unoptimized
-                        onError={(e) => (e.currentTarget.src = "/images/default.png")} // Handle errors gracefully
+                        onError={(e) => (e.currentTarget.src = "/images/default.png")}
                     />
                 </div>
 
@@ -190,28 +203,48 @@ function AiProductCard({ product }: { product: any }) {
                         </ul>
                     </div>
 
-                    {/* Sustainability Rating Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
-                        <div
-                            className={`h-4 rounded-full transition-all duration-500 ${
-                                product.rating > 75 ? "bg-green-500"
-                                    : product.rating > 50 ? "bg-yellow-500"
-                                    : "bg-red-500"
-                            }`}
-                            style={{ width: `${product.rating}%` }}
-                        ></div>
+                    {/* Sustainability Circular Progress */}
+                    <div className="flex justify-center items-center mt-4">
+                        <svg width="120" height="120" className="transform rotate-90">
+                            <circle
+                                cx="60"
+                                cy="60"
+                                r="50"
+                                stroke="lightgray"
+                                strokeWidth="10"
+                                fill="none"
+                            />
+                            <circle
+                                ref={circleRef}
+                                cx="60"
+                                cy="60"
+                                r="50"
+                                stroke={
+                                    product.rating < 30
+                                        ? 'red' 
+                                        : product.rating >= 30 && product.rating < 50
+                                        ? 'orange' 
+                                        : product.rating >= 50 && product.rating < 80
+                                        ? 'yellow' 
+                                        : 'green'
+                                }
+                                
+                                strokeWidth="10"
+                                fill="none"
+                                strokeDasharray="314" // Circumference of the circle (2 * Pi * radius)
+                                strokeDashoffset="314"
+                                style={{
+                                    transitionProperty: "stroke-dashoffset",
+                                    transitionDuration: "0.5s",
+                                    transitionTimingFunction: "ease"
+                                }}
+                            />
+                        </svg>
                     </div>
 
-                    {/* Sustainability Score */}
-                    <div className="flex justify-between items-center mt-4">
-                        <p className="text-sm text-gray-700">Sustainability Score: <strong>{product.rating}%</strong></p>
-                        <div className="w-12 h-12 rounded-full border-2 flex justify-center items-center text-white font-semibold"
-                            style={{
-                                backgroundColor: product.rating > 75 ? "green" :
-                                    product.rating > 50 ? "yellow" : "red"
-                            }}>
-                            {product.rating}
-                        </div>
+                    {/* Rating Percentage Below the Circle */}
+                    <div className="flex justify-center items-center mt-2">
+                        <p className="text-lg font-semibold text-gray-700">Sustainability Score: <strong>{product.rating}%</strong></p>
                     </div>
                 </div>
             </div>
@@ -244,10 +277,14 @@ function ProductCard({ product }: { product: any }) {
                 <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
                     <div
                         className={`h-4 rounded-full transition-all duration-500 ${
-                            product.rating > 75 ? "bg-green-500"
-                                : product.rating > 50 ? "bg-yellow-500"
-                                : "bg-red-500"
-                        }`}
+                            product.rating < 30
+                                ? "bg-red-500"
+                                : product.rating >= 30 && product.rating < 50
+                                ? "bg-orange-500"
+                                : product.rating >= 50 && product.rating < 80
+                                ? "bg-yellow-500"
+                                : "bg-green-500"
+                        }`}                        
                         style={{ width: `${product.rating}%` }}
                     ></div>
                 </div>
