@@ -6,6 +6,8 @@ import Image from "next/image";
 import NavBar from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 
 
 import {
@@ -125,13 +127,14 @@ export default function ProductsPage() {
 
                 {/* Search Bar for Product Name */}
                 <div className="flex flex-col md:flex-row justify-center mb-4 gap-4">
-                    <input
+                    <Input
                         type="text"
                         placeholder="Search by product name..."
-                        className="w-full md:w-1/2 p-3 border border-gray-300 rounded-lg"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
+                        className="w-full md:w-1/2"
                     />
+
                     <Button
                         onClick={() => handleSearch(search)}
                         variant="default"
@@ -144,19 +147,20 @@ export default function ProductsPage() {
 
                 {/* URL Search Bar for Product Extraction */}
                 <div className="flex flex-col md:flex-row justify-center mb-6 gap-4">
-                    <input
+                    <Input
                         type="text"
                         placeholder="Paste Amazon, Walmart, or eBay product URL..."
-                        className="w-full md:w-1/2 p-3 border border-gray-300 rounded-lg"
                         value={urlSearch}
                         onChange={(e) => setUrlSearch(e.target.value)}
+                        className="w-full md:w-1/2"
                     />
+
                     <Button
                         onClick={() => handleSearch(urlSearch, true)}
                         variant="outline"
                         disabled={loading}
                     >
-                        {loading ? "Extracting..." : "Extract from URL"}
+                        {loading ? "Extracting..." : "Extract URL"}
                     </Button>
 
                 </div>
