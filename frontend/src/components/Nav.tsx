@@ -35,10 +35,11 @@ const NavBar = () => {
         
         {/* Authentication Buttons */}
         <SignedOut>
-          <Button variant="default">
-            <SignInButton mode="modal" />
-          </Button>
+          <SignInButton mode="modal" className="px-4 py-2 bg-primary text-white rounded-md">
+            Sign In
+          </SignInButton>
         </SignedOut>
+
         
         <SignedIn>
           <UserButton afterSignOutUrl="/" />

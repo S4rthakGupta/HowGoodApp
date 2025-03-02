@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-
+import { motion } from "framer-motion"; // Import motion from framer-motion
 import Image from "next/image";
 import Link from "next/link";
 import NavBar from "@/components/Nav";
@@ -31,11 +31,14 @@ export default function HomePage() {
               <Button variant="outline">About HowGood</Button>
             </Link>
           </div>
-
         </div>
 
-        {/* Background Image (Right Side) */}
-        <div className="relative w-full lg:w-1/2">
+        {/* Floating Animation for Image */}
+        <motion.div 
+          className="relative w-full lg:w-1/2"
+          animate={{ y: [0, -10, 0] }} // Floating effect
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} // Smooth looping
+        >
           <Image
             src="/images/main.jpg"
             alt="Sustainable Future"
@@ -44,16 +47,16 @@ export default function HomePage() {
             objectFit="cover"
             className="rounded-lg"
           />
-        </div>
+        </motion.div>
       </section>
 
       {/* Info Section */}
-      <section className="py-16 px-6 text-center bg-gray-100">
-        <h2 className="text-4xl font-bold mb-6 text-gray-900">
+      <section className="py-16 px-6 text-center bg-[#13531c] ">
+        <h2 className="text-4xl font-bold mb-6 text-white">
           Promoting Responsible Consumption
         </h2>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-          Our goal is to promote **sustainable consumption** and reduce environmental impact by encouraging people to make responsible product choices.
+        <p className="text-lg text-white max-w-3xl mx-auto">
+          Our goal is to promote <strong><i>Sustainable Consumption</i></strong> and reduce environmental impact by encouraging people to make responsible product choices.
         </p>
       </section>
       <Footer />

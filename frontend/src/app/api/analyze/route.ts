@@ -51,7 +51,7 @@ function validateInput(query: string) {
     if (query.startsWith("http")) {
         const validDomains = ["amazon", "walmart", "ebay", "bestbuy"];
         if (!validDomains.some(domain => query.includes(domain))) {
-            return "Only Amazon, Walmart, eBay, and BestBuy URLs are supported.";
+            return "Only Amazon, Walmart, eBay, and BestBuy URLs are supported as of now.";
         }
     }
 

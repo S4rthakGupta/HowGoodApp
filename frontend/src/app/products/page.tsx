@@ -180,17 +180,17 @@ export default function ProductsPage() {
                 {/* AI-Generated Product Display */}
                 {aiProduct && (
                     <div className="my-8">
-                        <h2 className="text-2xl font-semibold">Product Details</h2>
+                        <h2 className="text-2xl  text-center underline font-semibold">Product Details</h2>
                         <AiProductCard product={aiProduct} />
                     </div>
                 )}
 
                 {/* Product List from Database */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {products.length > 0 ? (
                         products.map((product: any) => <ProductCard key={product._id} product={product} />)
                     ) : (
-                        <p className="text-gray-500 text-center">No products found.</p>
+                        <p className="text-gray-500 text-center"></p>
                     )}
                 </div>
 
@@ -216,7 +216,7 @@ export default function ProductsPage() {
 
 
                                                     {/* Sustainability Score Bar */}
-                                                    <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+                                                    <div className="w-full bg-gray-200 rounded-full h-2  mt-3">
                                                         <div
                                                             className={`h-2 rounded-full ${product.rating < 30
                                                                 ? "bg-red-500"
@@ -229,7 +229,7 @@ export default function ProductsPage() {
                                                             style={{ width: `${product.rating}%` }}
                                                         ></div>
                                                     </div>
-                                                    <p className="text-sm text-gray-700 mt-2">
+                                                    <p className="text-sm  text-5xl text-gray-700 mt-2">
                                                         Sustainability Score: <strong>{product.rating}%</strong>
                                                     </p>
                                                 </CardContent>
@@ -283,14 +283,14 @@ function AiProductCard({ product }: { product: any }) {
                 {/* Right: Product Details */}
                 <div className="w-2/3">
                     {/* Product Name with Gray Background */}
-                    <h2 className="text-2xl font-bold bg-gray-200 p-4 rounded-lg">{product.name}</h2>
+                    <h2 className="text-2xl font-bold uppercase bg-gray-200 p-4 rounded-lg">{product.name}</h2>
                     <div className="text-gray-600 mt-2" dangerouslySetInnerHTML={{ __html: product.description }}></div>
 
 
 
                     {/* Sustainability Details */}
                     <div className="mt-4 bg-gray-100 p-4 rounded-lg">
-                        <h3 className="text-xl font-semibold">Sustainability of {product.name}</h3>
+                        <h3 className="text-xl text-center underline font-semibold">Sustainability of {product.name}</h3>
                         <ul className="list-disc pl-6 mt-2 text-gray-700">
                             {product.factorRatings && Object.entries(product.factorRatings).map(([key, value]) => (
                                 <li key={key} className="text-sm">{`${key}: ${value}`}</li>

@@ -5,15 +5,15 @@ const Footer = () => {
   return (
     <footer className="w-full bg-white border-t border-gray-200 py-6 px-4">
       {/* Top row: Logos */}
-      <div className="flex flex-col md:flex-row justify-between items-center w-full mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center w-full mb-0">
         
         {/* Left: HowGood Logo */}
-        <div className="mb-4 md:mb-0">
+        <div className="mb-0 md:mb-0">
           <Image
             src="/images/logo2.png"
             alt="HowGood Logo"
-            width={140}
-            height={90}
+            width={80}
+            height={50}
           />
         </div>
 
@@ -22,12 +22,13 @@ const Footer = () => {
           <Image
             src="/images/conhacks.png"
             alt="Conhacks Logo"
-            width={140}
+            width={100}
             height={90}
           />
         </div>
 
       </div>
+        <div className="text-center text-2xl text-black italic"><strong>Developed By: Desi Guru's</strong></div>
 
       {/* Navigation Links */}
       <div className="flex justify-center space-x-6 text-sm font-medium text-gray-700 mt-4">
