@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
+import OpenAI from "openai";
 
-const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY;
-const CLASSIFICATION_MODEL = "facebook/bart-large-mnli"; // Sustainability classification
-const TEXT_GEN_MODEL = "tiiuae/falcon-7b-instruct"; // Description generation
-const SERP_API_KEY = process.env.SERP_API_KEY; // SerpAPI Key for Google Image Search
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY, // Ensure your .env.local has the correct key
+});
 
+const SERP_API_KEY = process.env.SERP_API_KEY; // SerpAPI for Google Image Search
 
 async function fetchProductImage(productName: string) {
     try {
@@ -13,123 +14,92 @@ async function fetchProductImage(productName: string) {
             params: {
                 api_key: SERP_API_KEY,
                 engine: "google_images",
-                q: `${productName} product`, // Improves search relevance
+                q: `${productName} product`,
                 hl: "en",
                 gl: "us",
-                num: 5, // Get multiple images for filtering
+                num: 5,
             },
         });
 
-        // **Filter Out Unwanted Images**
         const validDomains = [
-            "amazon.com",
-            "shopify.com",
-            "wikipedia.org",
-            "wikimedia.org",
-            "unsplash.com",
-            "googleusercontent.com",
+            "amazon.com", "shopify.com", "wikipedia.org", "wikimedia.org",
+            "unsplash.com", "googleusercontent.com",
         ];
 
         const images = response.data.images_results || [];
-
-        // **Prioritize Product Images from Trusted Domains**
         const filteredImages = images.filter((img: any) =>
             validDomains.some((domain) => img.original.includes(domain))
         );
 
-        // **Pick the Best Image (or fallback to default)**
-        const selectedImage = filteredImages.length > 0
-            ? filteredImages[0].original
-            : images.length > 0
-                ? images[0].original
-                : "/images/default.png"; // Fallback if no valid image
-
-        console.log(`🖼️ Selected Image for ${productName}: ${selectedImage}`);
-        return selectedImage;
+        return filteredImages.length > 0 ? filteredImages[0].original : "/images/default.png";
     } catch (error) {
-        console.error("❌ Failed to fetch product image:", error.response?.data || error.message);
-        return "/images/default.png"; // Fallback image
+        console.error("❌ Failed to fetch product image:", error.message);
+        return "/images/default.png";
     }
 }
 
-
-
-
-
 export async function POST(req: Request) {
     try {
-        const { name, description } = await req.json();
+        const { name } = await req.json();
         console.log(`📩 AI Request Received for: ${name}`);
 
-        let generatedDescription = description;
+        // **🔹 Step 1: Generate Sustainability Score & Description using OpenAI**
+        console.log("📝 Generating Sustainability Score & Description...");
+        const prompt = `
+        You are an expert in sustainability analysis. Your task is to analyze the sustainability of "${name}" 
+        based on four key factors: 
 
-        // **🔹 Step 1: AI Description Generation**
-        console.log("📝 Generating AI Description...");
-        try {
-            const descResponse = await axios.post(
-                `https://api-inference.huggingface.co/models/${TEXT_GEN_MODEL}`,
-                {
-                    inputs: `Describe the sustainability of ${name} in detail. Cover its environmental impact, material sourcing, recyclability, long-term effects, and alternatives. The response should be clear, specific, and informative.`,
-                },
-                { headers: { Authorization: `Bearer ${HUGGING_FACE_API_KEY}` } }
-            );
+        - Manufacturing Process
+        - Packaging
+        - Supply Chain Transparency
+        - Carbon Footprint
 
-            // ✅ Extract AI-generated description properly
-            if (Array.isArray(descResponse.data) && descResponse.data.length > 0) {
-                generatedDescription = descResponse.data[0]?.generated_text?.trim() || "No description available.";
-            } else {
-                console.warn("⚠ AI returned an unexpected response format:", descResponse.data);
-                generatedDescription = "No description available.";
-            }
+        **Instructions:**
+        1. Assign an overall sustainability score between **0-100%**.
+        2. The score must be the **first line** of your response.
+        3. Provide a **detailed product description** explaining the sustainability impact.
 
-            console.log(`✅ AI-Generated Description: ${generatedDescription}`);
-        } catch (error) {
-            console.error("❌ Description Generation Failed:", error.response?.data || error.message);
-            generatedDescription = "No description available.";
-        }
+        ### **Example Output Format**:
+        "Sustainability Score: 85%"
+        Description: [A detailed description of the product’s sustainability impact.]
 
-        // **🔹 Step 2: Fetch Sustainability Rating**
-        const aiPrompt = `
-            Analyze the sustainability of this product based on these key factors:
-            - Manufacturing Process
-            - Packaging
-            - Supply Chain Transparency
-            - Carbon Footprint
-
-            Product: ${name}  
-            Provide an individual rating (0-100) and a short explanation for each factor.
+        Now, analyze "${name}" and provide the score and description in the exact format required.
         `;
 
-        const candidate_labels = ["highly sustainable", "eco-friendly", "moderately sustainable", "neutral", "wasteful", "polluting"];
+        const openAIResponse = await openai.chat.completions.create({
+            model: "gpt-4o", // ✅ Ensure GPT-4o is accessible
+            messages: [{ role: "user", content: prompt }],
+            max_tokens: 300, // ✅ Increased for a detailed description
+        });
 
-        const response = await axios.post(
-            `https://api-inference.huggingface.co/models/${CLASSIFICATION_MODEL}`,
-            { inputs: aiPrompt, parameters: { candidate_labels } },
-            { headers: { Authorization: `Bearer ${HUGGING_FACE_API_KEY}` } }
-        );
+        const aiResponseText = openAIResponse.choices[0]?.message?.content || "";
+        console.log(`✅ AI Response: ${aiResponseText}`);
 
-        console.log("🟢 AI Response:", response.data);
+        // **Extract Sustainability Score**
+        const scoreMatch = aiResponseText.match(/Sustainability Score: (\d+)%/);
+        const overallRating = scoreMatch ? parseInt(scoreMatch[1], 10) : null;
 
-        // **Extract Confidence Scores**
-        const scores = response.data?.scores || [];
-        let overallRating = 50; // Default
-        if (scores.length > 0) {
-            const highestScore = Math.max(...scores);
-            overallRating = Math.round(highestScore * 100);
+        // **Extract Product Description**
+        const descriptionMatch = aiResponseText.match(/Description: (.+)/s);
+        const productDescription = descriptionMatch ? descriptionMatch[1].trim() : "No description available.";
+
+        if (!overallRating) {
+            console.error("❌ AI did not return a valid sustainability score.");
+            return NextResponse.json({ error: "AI could not generate a valid score." }, { status: 500 });
         }
 
-        // **🔹 Step 3: Fetch Product Image from Google**
+        // **🔹 Step 2: Fetch Product Image**
         const imageUrl = await fetchProductImage(name);
 
         return NextResponse.json({
             name,
-            description: generatedDescription, // ✅ Always contains a valid description
+            description: productDescription, // ✅ AI-generated description
             overallRating,
-            image: imageUrl, // ✅ Added dynamic image URL
+            image: imageUrl,
         });
 
     } catch (error) {
-        console.error("❌ AI Analysis Failed:", error.response?.data || error.message);
+        console.error("❌ AI Analysis Failed:", error.message);
         return NextResponse.json({ error: "AI Analysis Failed" }, { status: 500 });
     }
 }

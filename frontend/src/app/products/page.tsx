@@ -59,21 +59,33 @@ export default function ProductsPage() {
 
             const data = await response.json();
 
-            // Check if AI returned valid data
-            if (!data || !data.description || !data.overallRating) {
-                console.error("❌ AI Response Invalid:", data);
-                throw new Error("AI returned an empty response.");
+            // **Ensure We Extract the AI Score Properly**
+            let sustainabilityScore = 50; // Default to 50 if AI fails
+
+            if (data && data.overallRating) {
+                sustainabilityScore = data.overallRating; // ✅ Use the actual backend response!
             }
+
+            // setAiProduct({
+            //     name: search,
+            //     description: data.description || "No description available.",
+            //     rating: sustainabilityScore,
+            //     factorRatings: data.factorRatings || {},
+            //     image: data.image && data.image.startsWith("http") ? data.image : "/images/default.png",
+            // });
+
+            // console.log(`✅ AI Product Updated: ${search} - Score: ${sustainabilityScore}%`);
+
 
             setAiProduct({
                 name: search,
-                description: data.description || "No description available.",
-                rating: data.overallRating || 50,
+                description: data.description || "No description available.", // ✅ Now uses AI-generated description
+                rating: data.overallRating,
                 factorRatings: data.factorRatings || {},
-                image: data.image && data.image.startsWith("http") ? data.image : "/images/default.png", // ✅ Ensures valid images
+                image: data.image && data.image.startsWith("http") ? data.image : "/images/default.png",
             });
 
-            console.log(`✅ AI Response Received for ${search}`);
+
         } catch (err) {
             console.error("❌ AI Error:", err);
             setError("AI could not generate a response. Try another product.");
@@ -179,11 +191,10 @@ function ProductCard({ product }: { product: any }) {
                 {/* Sustainability Rating Bar */}
                 <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
                     <div
-                        className={`h-4 rounded-full transition-all duration-500 ${
-                            product.rating > 75 ? "bg-green-500"
-                                : product.rating > 50 ? "bg-yellow-500"
+                        className={`h-4 rounded-full transition-all duration-500 ${product.rating > 75 ? "bg-green-500"
+                            : product.rating > 50 ? "bg-yellow-500"
                                 : "bg-red-500"
-                        }`}
+                            }`}
                         style={{ width: `${product.rating}%` }}
                     ></div>
                 </div>
