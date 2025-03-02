@@ -3,27 +3,30 @@ import axios from "axios";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY, // Ensure your .env.local has the correct key
+    apiKey: process.env.OPENAI_API_KEY,
 });
 
 const SERP_API_KEY = process.env.SERP_API_KEY; // SerpAPI for Google Image Search
 
+// **🔹 Improved Product Image Fetching**
 async function fetchProductImage(productName: string) {
     try {
+        console.log(`🔍 Fetching image for: ${productName}`);
         const response = await axios.get(`https://serpapi.com/search`, {
             params: {
                 api_key: SERP_API_KEY,
                 engine: "google_images",
-                q: `${productName} product`,
+                q: `${productName} official product image`,
                 hl: "en",
                 gl: "us",
                 num: 5,
             },
         });
 
+        // **Only Select High-Quality Product Images**
         const validDomains = [
-            "amazon.com", "shopify.com", "wikipedia.org", "wikimedia.org",
-            "unsplash.com", "googleusercontent.com",
+            "amazon.com", "walmart.com", "ebay.com",
+            "shopify.com", "target.com", "bestbuy.com"
         ];
 
         const images = response.data.images_results || [];
@@ -38,38 +41,61 @@ async function fetchProductImage(productName: string) {
     }
 }
 
+// **🔹 Validate Product Input**
+function validateInput(query: string) {
+    if (!query || query.trim() === "") {
+        return "Please enter a valid product name or URL.";
+    }
+
+    // **If it's a URL, validate it**
+    if (query.startsWith("http")) {
+        const validDomains = ["amazon", "walmart", "ebay", "bestbuy"];
+        if (!validDomains.some(domain => query.includes(domain))) {
+            return "Only Amazon, Walmart, eBay, and BestBuy URLs are supported.";
+        }
+    }
+
+    return null;
+}
+
+// **🔹 AI Analysis API**
 export async function POST(req: Request) {
     try {
-        const { name } = await req.json();
-        console.log(`📩 AI Request Received for: ${name}`);
+        const { searchQuery } = await req.json();
+        console.log(`📩 AI Request Received for: ${searchQuery}`);
+
+        // **Validate Input Before Proceeding**
+        const validationError = validateInput(searchQuery);
+        if (validationError) {
+            return NextResponse.json({ error: validationError }, { status: 400 });
+        }
 
         // **🔹 Step 1: Generate Sustainability Score & Description using OpenAI**
         console.log("📝 Generating Sustainability Score & Description...");
         const prompt = `
-        You are an expert in sustainability analysis. Your task is to analyze the sustainability of "${name}" 
-        based on four key factors: 
+        You are an expert in sustainability analysis. Analyze the sustainability of "${searchQuery}" 
+        based on:
 
         - Manufacturing Process
         - Packaging
         - Supply Chain Transparency
         - Carbon Footprint
 
-        **Instructions:**
-        1. Assign an overall sustainability score between **0-100%**.
-        2. The score must be the **first line** of your response.
-        3. Provide a **detailed product description** explaining the sustainability impact.
+        Provide:
+        1. A sustainability score (0-100%) on the first line.
+        2. A detailed explanation.
 
         ### **Example Output Format**:
         "Sustainability Score: 85%"
         Description: [A detailed description of the product’s sustainability impact.]
 
-        Now, analyze "${name}" and provide the score and description in the exact format required.
+        Now analyze "${searchQuery}".
         `;
 
         const openAIResponse = await openai.chat.completions.create({
-            model: "gpt-4o", // ✅ Ensure GPT-4o is accessible
+            model: "gpt-4o",
             messages: [{ role: "user", content: prompt }],
-            max_tokens: 300, // ✅ Increased for a detailed description
+            max_tokens: 300,
         });
 
         const aiResponseText = openAIResponse.choices[0]?.message?.content || "";
@@ -84,16 +110,15 @@ export async function POST(req: Request) {
         const productDescription = descriptionMatch ? descriptionMatch[1].trim() : "No description available.";
 
         if (!overallRating) {
-            console.error("❌ AI did not return a valid sustainability score.");
             return NextResponse.json({ error: "AI could not generate a valid score." }, { status: 500 });
         }
 
         // **🔹 Step 2: Fetch Product Image**
-        const imageUrl = await fetchProductImage(name);
+        const imageUrl = await fetchProductImage(searchQuery);
 
         return NextResponse.json({
-            name,
-            description: productDescription, // ✅ AI-generated description
+            name: searchQuery,
+            description: productDescription,
             overallRating,
             image: imageUrl,
         });
